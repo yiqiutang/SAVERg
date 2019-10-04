@@ -1,0 +1,17 @@
+Package: SAVERg
+Type: Package
+Title: A supplementary package to package SAVER
+Version: 0.1.0
+Author: Yiqiu Tang
+Maintainer: Yiqiu Tang <yiqiu.tang@mail.utoronto.ca>
+Description: Carry out cell clustering analysis and pseudotime trajectory analysis to assess the imputation accuracy of SAVER.
+License: GPL-2
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 6.1.1
+Depends: R (>= 3.0.1)
+Imports: SAVER, TSCAN, igraph, Rtsne, mclust, scales
+Suggests: knitr
+VignetteBuilder: knitr
+NeedsCompilation: no
+Packaged: 2019-09-21 07:47:29 UTC; 7
