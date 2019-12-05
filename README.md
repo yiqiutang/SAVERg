@@ -22,7 +22,7 @@ library(SAVERg)
 
 An overview of SAVERg is described below:
 
-![](inst/extdata/figures/Tang_Y_A1.png)
+![](inst/extdata/figures/oneminpitch.png)
 
 for more details...
 
