@@ -1,0 +1,12 @@
+citHeader("To cite SAVERg in publications use:")
+
+citEntry(
+  entry    = "Unpublished",
+  title    = "SAVERg: Cell clustering and trajectory analysis of SAVER package",
+  author   = "Yiqiu Tang",
+  note     = "Unpublished",
+  year     = "2019",
+  textVersion = paste(
+
+  )
+)
