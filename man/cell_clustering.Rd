@@ -22,15 +22,14 @@ the columns correspond to cells. Can be sparse.}
 \item{imputed.data}{Whether the input matrix has been imputed. Default is TRUE.}
 }
 \value{
-The t-SNE visualization and aRI value of the dataset.
+An aRI value of the dataset and the t-SNE visualization.
 }
 \description{
 Cell clustering analysis
 }
 \examples{
-data('ipsc_saver')
+library(SAVERg)
 cell_clustering(ipsc_saver)
-
 }
 \author{
 Yiqiu Tan

@@ -1,3 +1,5 @@
+# trajectory_analysis.R
+
 #' Pseudotime trajectory analysis
 #'
 #' Carries out cell trajectory analysis to assess the imputation accuracy of SAVER.
@@ -9,19 +11,13 @@
 #' @param ncores Number of cores to use. Default is 4.
 #' @param need.imputation Whether the input matrix needs imputation. Default is FALSE.
 #' @param imputed.data Whether the input matrix has been imputed. Default is TRUE.
-#'
-#' @return Two metrics: Pseudo-temporal Ordering Score (POS) and Kendall's rank correlation score,
+#' @return a list of two metrics: Pseudo-temporal Ordering Score (POS) and Kendall's rank correlation score,
 #' which are used to assess the accuracy of the inferred cell trajectory and the plot of the cell trajectory.
-#' @export
-#'
-#' @import SAVER
-#' @import TSCAN
-#' @import igraph
 #'
 #' @author Yiqiu Tang
 #'
 #' @examples
-#' data('deng_saver')
+#' library(SAVERg)
 #' deng_cellLabels <- factor(colnames(deng_saver),
 #'                           levels=c('zygote', 'early 2-cell',
 #'                                    'mid 2-cell', 'late 2-cell',
@@ -29,68 +25,63 @@
 #'                                    'mid blastocyst', 'late blastocyst'))
 #' trajectory_analysis(deng_saver, deng_cellLabels)
 #'
+#' @references
+#' Ashenberg, O., Silverbush, D., & Gosik, K. (2019). ANALYSIS OF SINGLE CELL RNA-SEQ DATA.
+#' Retrieved from https://broadinstitute.github.io/2019_scWorkshop/.
+#'
+#' Cole Trapnell Lab (2018). Monocle. Retrieved
+#' from http://cole-trapnell-lab.github.io/monocle-release/docs/#constructing-single-cell-trajectories.
+#' Huang, M., Zhang, N., & Li, M. (2019, November 13). Single-Cell RNA-Seq Gene Expression Recovery
+#'  [R package SAVER version 1.1.2]. Retrieved from https://cran.r-project.org/web/packages/SAVER/index.html.
+#'
+#'  Huang, M., Zhang, N., & Li, M. (2019, November 13). SAVER Tutorial.
+#'   https://cran.r-project.org/web/packages/SAVER/vignettes/saver-tutorial.html.
+#'
+#' Trajectory Analysis. Retrieved
+#' from https://www.rdocumentation.org/packages/geomorph/versions/3.0.7/topics/trajectory.analysis.
+#'
+#' @export
 trajectory_analysis <- function(count_data, cellLabels, percent=0.1, ncores=4,
-
-                                need.imputation=FALSE, imputed.data = TRUE){
-
+                                need.imputation=FALSE, imputed.data = TRUE) {
   if (!imputed.data) {
-
     message("Starting preprocessing ...")
-
-    count_data <- preprocessing(count_data, percent=percent)
-
+    count_data <- preprocessing(count_data, percent = percent)
     message("Done!")
 
     if (need.imputation) {
-
       message("Starting log-normalization ...")
-
       count_data <- log_normalization(count_data)
-
       message("Done!")
 
       message("Starting imputation using SAVER ...")
-
-      count_data <- saver(count_data, ncores)$estimate
-
+      count_data <- SAVER::saver(count_data, ncores)$estimate
     }
-
   }
 
-
   message("Starting cell trajectory inference ...")
-
   colnames(count_data) = c(1:ncol(count_data))
-
-  procdata <- preprocess(count_data)
-
-  lpsmclust <- exprmclust(procdata)
-
-  lpsorder <- TSCANorder(lpsmclust, orderonly=F)
-
+  procdata <- TSCAN::preprocess(count_data)
+  lpsmclust <- TSCAN::exprmclust(procdata)
+  lpsorder <- TSCAN::TSCANorder(lpsmclust, orderonly=F)
   Pseudotime <- lpsorder$Pseudotime[match(colnames(count_data),lpsorder$sample_name)]
-
-  cor.kendall <- cor(Pseudotime, as.numeric(cellLabels), method = "kendall", use = "complete.obs")
-
+  cor.kendall <- stats::cor(Pseudotime, as.numeric(cellLabels), method = "kendall", use = "complete.obs")
   subpopulation <- data.frame(cell = colnames(count_data), sub = as.numeric(cellLabels)-1)
-
-  POS <- orderscore(subpopulation, lpsorder)[1]
-
+  POS <- TSCAN::orderscore(subpopulation, lpsorder)[1]
   message("Done!")
 
-  out <- list(cor.kendall=cor.kendall, POS=POS)
-
+  names(POS) <- NULL
+  out <- list(cor.kendall=round(cor.kendall, digits = 4),
+              POS = round(POS, digits = 4))
   message("Output POS and Kendall's rank correlation score:")
-
   print(out)
-
   message("Plot the inferred cell trajectory ...")
-
   message("Done!")
 
-  g <- plotmclust(lpsmclust, show_cell_names = F)
+  g <- TSCAN::plotmclust(lpsmclust, show_cell_names = F)
+  print(g)
 
-  g
-
-
+  # returns
+  return(out)
 }
+
+# [END]

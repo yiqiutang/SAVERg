@@ -22,21 +22,20 @@ the columns correspond to cells. Can be sparse.}
 \item{imputed.data}{Whether the input matrix has been imputed. Default is TRUE.}
 }
 \value{
-Two metrics: Pseudo-temporal Ordering Score (POS) and Kendall's rank correlation score,
+a list of two metrics: Pseudo-temporal Ordering Score (POS) and Kendall's rank correlation score,
 which are used to assess the accuracy of the inferred cell trajectory and the plot of the cell trajectory.
 }
 \description{
 Carries out cell trajectory analysis to assess the imputation accuracy of SAVER.
 }
 \examples{
-data('deng_saver')
+library(SAVERg)
 deng_cellLabels <- factor(colnames(deng_saver),
                           levels=c('zygote', 'early 2-cell',
                                    'mid 2-cell', 'late 2-cell',
                                    '4-cell', '8-cell', '16-cell', 'early blastocyst',
                                    'mid blastocyst', 'late blastocyst'))
 trajectory_analysis(deng_saver, deng_cellLabels)
-
 }
 \author{
 Yiqiu Tang

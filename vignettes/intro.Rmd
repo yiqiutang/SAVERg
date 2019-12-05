@@ -1,0 +1,57 @@
+---
+title: "Introduction to SAVERg"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Introduction to SAVERg}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+#### Cell clustering
+We take the iPSC dataset as an example. The rows correspond to genes and the columns correspond to cells. The cell labels are known and can be treated as the gold standard.
+You can use the raw count matrix as the input matrix:
+```{r setup}
+library(SAVERg)
+cell_clustering(ipsc_count_data, need.imputation=TRUE, imputed.data = FALSE)
+```
+
+To save time, you can just input the imputed result of SAVER and carry out cell clustering analysis:
+```{r}
+cell_clustering(ipsc_saver, need.imputation=FALSE, imputed.data = TRUE)
+```
+
+You can also input the raw count matrix and not perform SAVER imputation to compare the results with imputation and without imputation:
+```{r}
+cell_clustering(ipsc_count_data, need.imputation=FALSE, imputed.data = FALSE)
+```
+
+#### Pseudotime trajectory analysis
+We take the deng dataset as an example. The rows correspond to genes and the columns correspond to cells. The cell labels are known and can be treated as the gold standard.
+You can use the raw count matrix as the input matrix:
+```{r}
+deng_cellLabels <- factor(colnames(deng_count_data),
+                          levels=c('zygote', 'early 2-cell', 'mid 2-cell', 'late 2-cell',
+                                   '4-cell', '8-cell', '16-cell', 'early blastocyst',
+                                   'mid blastocyst', 'late blastocyst'))
+trajectory_analysis(deng_count_data, cellLabels=deng_cellLabels,
+                    need.imputation=FALSE, imputed.data = TRUE)
+```
+
+To save time, you can just input the imputed result of SAVER and carry out pseudotime trajectory analysis:
+```{r}
+trajectory_analysis(deng_saver, cellLabels=deng_cellLabels,
+                    need.imputation=TRUE, imputed.data=FALSE)
+```
+
+You can also input the raw count matrix and not perform SAVER imputation to compare the results with imputation and without imputation:
+```{r}
+trajectory_analysis(deng_count_data, cellLabels=deng_cellLabels,
+                    need.imputation=FALSE, imputed.data = FALSE)
+```
